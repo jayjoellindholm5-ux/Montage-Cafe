@@ -106,28 +106,22 @@
                 <!-- Bigger Category Tabs -->
                 <div class="flex gap-2.5 bg-cafe-card p-2.5 rounded-2xl border border-cafe-border shadow-md shrink-0 overflow-x-auto no-scrollbar">
                     <button onclick="switchCategory('iced')" id="tab-iced" class="shrink-0 min-w-[125px] py-2.5 px-3 rounded-xl text-xs font-semibold transition flex flex-col items-center justify-center space-y-1 bg-cafe-accent text-cafe-dark shadow-lg">
-                        <span class="text-[9px] uppercase font-bold opacity-80 tracking-widest">Scene 1</span>
-                        <span class="text-sm font-bold">Classic (Iced)</span>
+                        <span class="text-sm font-bold">Coffee(Iced)</span>
                     </button>
                     <button onclick="switchCategory('hot')" id="tab-hot" class="shrink-0 min-w-[125px] py-2.5 px-3 rounded-xl text-xs font-semibold transition flex flex-col items-center justify-center space-y-1 text-gray-300 bg-cafe-dark border border-cafe-border hover:border-cafe-accent hover:text-white">
-                        <span class="text-[9px] uppercase font-bold opacity-60 tracking-widest">Scene 1</span>
-                        <span class="text-sm font-semibold">Classic (Hot)</span>
+                        <span class="text-sm font-semibold">Coffee(Hot)</span>
                     </button>
                     <button onclick="switchCategory('favorites')" id="tab-favorites" class="shrink-0 min-w-[125px] py-2.5 px-3 rounded-xl text-xs font-semibold transition flex flex-col items-center justify-center space-y-1 text-gray-300 bg-cafe-dark border border-cafe-border hover:border-cafe-accent hover:text-white">
-                        <span class="text-[9px] uppercase font-bold opacity-60 tracking-widest">Scene 2</span>
-                        <span class="text-sm font-semibold">Favorites</span>
+                        <span class="text-sm font-semibold">Milk Tea</span>
                     </button>
                     <button onclick="switchCategory('milky')" id="tab-milky" class="shrink-0 min-w-[125px] py-2.5 px-3 rounded-xl text-xs font-semibold transition flex flex-col items-center justify-center space-y-1 text-gray-300 bg-cafe-dark border border-cafe-border hover:border-cafe-accent hover:text-white">
-                        <span class="text-[9px] uppercase font-bold opacity-60 tracking-widest">Scene 3</span>
-                        <span class="text-sm font-semibold">Milky</span>
+                        <span class="text-sm font-semibold">Milky Series(Non-Coffee Based)</span>
                     </button>
                     <button onclick="switchCategory('soda')" id="tab-soda" class="shrink-0 min-w-[125px] py-2.5 px-3 rounded-xl text-xs font-semibold transition flex flex-col items-center justify-center space-y-1 text-gray-300 bg-cafe-dark border border-cafe-border hover:border-cafe-accent hover:text-white">
-                        <span class="text-[9px] uppercase font-bold opacity-60 tracking-widest">Scene 3</span>
-                        <span class="text-sm font-semibold">Soda</span>
+                        <span class="text-sm font-semibold">Fruity Soda</span>
                     </button>
                     <button onclick="switchCategory('bites')" id="tab-bites" class="shrink-0 min-w-[125px] py-2.5 px-3 rounded-xl text-xs font-semibold transition flex flex-col items-center justify-center space-y-1 text-gray-300 bg-cafe-dark border border-cafe-border hover:border-cafe-accent hover:text-white">
-                        <span class="text-[9px] uppercase font-bold opacity-60 tracking-widest">Scene 4</span>
-                        <span class="text-sm font-semibold">Bites</span>
+                        <span class="text-sm font-semibold">Foods</span>
                     </button>
                 </div>
 
@@ -301,40 +295,44 @@
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const menuDatabase = {
-            iced: [
-                { name: 'Americano', price: 79, category: 'iced' },
-                { name: 'Vanilla Latte', price: 109, category: 'iced' },
-                { name: 'Hazelnut Latte', price: 109, category: 'iced' },
-                { name: 'Spanish Latte', price: 109, category: 'iced' },
-                { name: 'Caramel Latte', price: 109, category: 'iced' },
-                { name: 'Caramel Macchiato', price: 119, category: 'iced' },
-                { name: 'Sea Salt Latte', price: 129, category: 'iced' },
-                { name: 'Mocha Latte', price: 119, category: 'iced' }
-            ],
             hot: [
-                { name: 'Americano', price: 69, category: 'hot' },
-                { name: 'Cafe Latte', price: 99, category: 'hot' },
-                { name: 'Spanish Latte', price: 99, category: 'hot' },
-                { name: 'Hazelnut Latte', price: 99, category: 'hot' },
-                { name: 'Mocha Latte', price: 99, category: 'hot' },
-                { name: 'Caramel Macchiato', price: 99, category: 'hot' }
+                { name: 'Americano (Hot)', type: 'hott', sizes: { '8oz': 49, '12oz': 69}, category: 'hot' },
+                { name: 'Cafe Latte (Hot)', type: 'hott', sizes: { '8oz': 79, '12oz': 99}, category: 'hot' },
+                { name: 'Spanish Latte (Hot)', type: 'hott', sizes: { '8oz': 79, '12oz': 99}, category: 'hot' },
+                { name: 'Hazelnut Latte (Hot)', type: 'hott', sizes: { '8oz': 79, '12oz': 99}, category: 'hot' },
+                { name: 'Mocha Latte (Hot)', type: 'hott', sizes: { '8oz': 79, '12oz': 99}, category: 'hot' },
+                { name: 'Caramel Macchiato (Hot)', type: 'hott', sizes: { '8oz': 79, '12oz': 99}, category: 'hot' }
             ],
+            iced: [
+                { name: 'Americano (Iced)', price: 79, category: 'iced' },
+                { name: 'Vanilla Latte (Iced)', price: 109, category: 'iced' },
+                { name: 'Hazelnut Latte (Iced)', price: 109, category: 'iced' },
+                { name: 'Spanish Latte (Iced)', price: 109, category: 'iced' },
+                { name: 'Cafe Latte (Iced)', price: 109, category: 'iced' },
+                { name: 'Caramel Macchiato (Iced)', price: 119, category: 'iced' },
+                { name: 'Mocha Latte (Iced)', price: 119, category: 'iced' },
+                { name: 'Dirty Matcha (Iced)', price: 129, category: 'iced' },
+                { name: 'Sea Salt Latte (Iced)', price: 129, category: 'iced' }
+            ],
+            
             favorites: [
-                { name: 'Okinawa', type: 'sized', sizes: { '16oz': 49, '22oz': 69 }, category: 'favorites' },
-                { name: 'Wintermelon', type: 'sized', sizes: { '16oz': 49, '22oz': 69 }, category: 'favorites' },
-                { name: 'Chocolate', type: 'sized', sizes: { '16oz': 49, '22oz': 69 }, category: 'favorites' },
-                { name: 'Matcha', type: 'sized', sizes: { '16oz': 49, '22oz': 69 }, category: 'favorites' },
-                { name: 'Cookies & Cream', type: 'sized', sizes: { '16oz': 49, '22oz': 69 }, category: 'favorites' }
+                { name: 'Okinawa Milktea', type: 'milktea', sizes: { '16oz': 49, '22oz': 69 }, category: 'favorites' },
+                { name: 'Wintermelon Milktea', type: 'milktea', sizes: { '16oz': 49, '22oz': 69 }, category: 'favorites' },
+                { name: 'Chocolate Milktea', type: 'milktea', sizes: { '16oz': 49, '22oz': 69 }, category: 'favorites' },
+                { name: 'Matcha Milktea', type: 'milktea', sizes: { '16oz': 49, '22oz': 69 }, category: 'favorites' },
+                { name: 'Cookies & Cream Milktea', type: 'milktea', sizes: { '16oz': 49, '22oz': 69 }, category: 'favorites' }
             ],
             milky: [
                 { name: 'Berry Milk', price: 89, category: 'milky' },
                 { name: 'Milky Choco', price: 89, category: 'milky' },
                 { name: 'Milky Oreo', price: 89, category: 'milky' },
-                { name: 'Oreo Matcha', price: 99, category: 'milky' },
-                { name: 'Berry Matcha', price: 99, category: 'milky' },
+                { name: 'Berry Oreo', price: 99, category: 'milky' },
                 { name: 'Sea Salt Berry', price: 99, category: 'milky' },
-                { name: 'Sea Salt Matcha', price: 99, category: 'milky' },
-                { name: 'Berry Oreo', price: 99, category: 'milky' }
+                { name: 'Berry Matcha', price: 99, category: 'milky' },
+                { name: 'Oreo Matcha', price: 99, category: 'milky' },
+                { name: 'Matcha Latte', price: 99, category: 'milky' },
+                { name: 'Sea Salt Matcha', price: 99, category: 'milky' }
+                
             ],
             soda: [
                 { name: 'Green Apple Soda', price: 49, category: 'soda' },
@@ -344,11 +342,14 @@
                 { name: 'Blueberry Soda', price: 49, category: 'soda' }
             ],
             bites: [
+                { name: 'Cheese Stick (6pcs)', price: 30, category: 'bites' },
                 { name: 'Plain Waffle', price: 39, category: 'bites' },
                 { name: 'Choco Waffle', price: 60, category: 'bites' },
+                { name: 'Choco Palitaw', price: 50, category: 'bites'},
+                { name: 'Matcha Palitaw', price: 50, category: 'bites'},
                 { name: 'Strawberry Waffle', price: 60, category: 'bites' },
                 { name: 'Oreo Waffle', price: 60, category: 'bites' },
-                { name: 'Regular Fries', price: 40, category: 'bites' },
+                { name: 'Regular Fries', type: 'flavor', sizes: { 'Cheese': 40, 'Sour Cream': 40, 'BBQ': 40 }, category: 'bites' },
                 { name: 'Overload Fries', price: 89, category: 'bites' },
                 { name: 'Regular Burger', price: 59, category: 'bites' },
                 { name: 'Cheese Burger', price: 69, category: 'bites' },
@@ -401,8 +402,14 @@
                 card.className = "bg-cafe-card border border-cafe-border hover:border-cafe-accent rounded-xl p-3 cursor-pointer transition shadow-sm flex flex-col justify-between group";
                 
                 let priceDisplay = `₱${item.price}`;
-                if (item.type === 'sized') {
+                if (item.type === 'hott') {
+                    priceDisplay = `8oz: ₱${item.sizes['8oz']} | 12oz: ₱${item.sizes['12oz']}`;
+                    card.onclick = () => openItemModal(item);
+                } else if (item.type === 'milktea') {
                     priceDisplay = `16oz: ₱${item.sizes['16oz']} | 22oz: ₱${item.sizes['22oz']}`;
+                    card.onclick = () => openItemModal(item);
+                } else if (item.type === 'flavor') {
+                    priceDisplay = `Cheese: ₱${item.sizes['Cheese']} | Sour cream: ₱${item.sizes['Sour Cream']} | BBQ: ₱${item.sizes['BBQ']}`;
                     card.onclick = () => openItemModal(item);
                 } else {
                     card.onclick = () => changeItemQuantity(item.name, item.price, 1);
@@ -435,6 +442,7 @@
                 let priceDisplay = item.price ? `₱${item.price}` : `16oz: ₱${item.sizes['16oz']} | 22oz: ₱${item.sizes['22oz']}`;
                 card.onclick = () => {
                     if (item.type === 'sized') openItemModal(item);
+                    else if(item.type === 'flavor') openItemModal(item);
                     else changeItemQuantity(item.name, item.price, 1);
                 };
 
