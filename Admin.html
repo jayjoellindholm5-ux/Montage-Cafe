@@ -61,7 +61,7 @@
 <body class="bg-cafe-dark min-h-screen flex flex-col antialiased text-gray-100">
 
     <!-- Top Navigation Header -->
-    <header class="bg-cafe-card border-b border-cafe-border shrink-0 z-30 shadow-md">
+    <header class="bg-cafe-card border-b border-cafe-border shrink-0 z-30 shadow-md no-print">
         <div class="w-full max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <div class="w-9 h-9 rounded-full bg-cafe-accent/20 flex items-center justify-center border border-cafe-accent/50 text-cafe-accent">
@@ -72,8 +72,10 @@
                     <p class="text-[10px] text-gray-400 tracking-wider uppercase">Admin Dashboard & Reports</p>
                 </div>
             </div>
-            
             <div class="flex items-center space-x-3">
+                <span id="live-badge" class="hidden sm:flex items-center space-x-1.5 text-[10px] text-gray-400 uppercase tracking-wider">
+                    <span class="w-2 h-2 rounded-full bg-gray-500" id="live-dot"></span><span id="live-text">Connecting</span>
+                </span>
                 <a href="index.html" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-cafe-dark hover:bg-cafe-border border border-cafe-border text-gray-300 hover:text-white transition flex items-center space-x-2 shadow">
                     <i class="fa-solid fa-cash-register text-cafe-accent"></i>
                     <span>Back to POS Terminal</span>
@@ -82,64 +84,109 @@
         </div>
     </header>
 
-    <!-- Main Admin Container -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 space-y-6">
-        
-        <!-- Metrics / Summary Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="bg-cafe-card border border-cafe-border rounded-2xl p-4 shadow-md flex items-center space-x-4">
-                <div class="w-12 h-12 rounded-xl bg-cafe-accent/10 border border-cafe-accent/30 flex items-center justify-center text-cafe-accent text-lg">
-                    <i class="fa-solid fa-peso-sign"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Total Revenue</p>
-                    <h3 id="stat-revenue" class="text-xl font-bold font-serif text-white mt-0.5">₱0.00</h3>
-                </div>
-            </div>
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 space-y-6 no-print">
 
-            <div class="bg-cafe-card border border-cafe-border rounded-2xl p-4 shadow-md flex items-center space-x-4">
-                <div class="w-12 h-12 rounded-xl bg-cafe-accent/10 border border-cafe-accent/30 flex items-center justify-center text-cafe-accent text-lg">
-                    <i class="fa-solid fa-receipt"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Total Orders</p>
-                    <h3 id="stat-orders" class="text-xl font-bold font-serif text-white mt-0.5">0</h3>
-                </div>
+        <!-- Daily cards -->
+        <div>
+            <div class="flex items-center justify-between mb-2">
+                <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                    <i class="fa-regular fa-calendar text-cafe-accent mr-1"></i>
+                    Daily Summary &mdash; <span id="daily-label" class="text-white">Today</span>
+                </h2>
             </div>
-
-            <div class="bg-cafe-card border border-cafe-border rounded-2xl p-4 shadow-md flex items-center space-x-4">
-                <div class="w-12 h-12 rounded-xl bg-cafe-accent/10 border border-cafe-accent/30 flex items-center justify-center text-cafe-accent text-lg">
-                    <i class="fa-solid fa-mug-hot"></i>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-cafe-card border border-cafe-border rounded-2xl p-4 shadow-md flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-cafe-accent/10 border border-cafe-accent/30 flex items-center justify-center text-cafe-accent text-lg"><i class="fa-solid fa-receipt"></i></div>
+                    <div>
+                        <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Daily Orders</p>
+                        <h3 id="day-orders" class="text-xl font-bold font-serif text-white mt-0.5">0</h3>
+                    </div>
                 </div>
-                <div>
-                    <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Items Sold</p>
-                    <h3 id="stat-items" class="text-xl font-bold font-serif text-white mt-0.5">0</h3>
+                <div class="bg-cafe-card border border-cafe-border rounded-2xl p-4 shadow-md flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-cafe-accent/10 border border-cafe-accent/30 flex items-center justify-center text-cafe-accent text-lg"><i class="fa-solid fa-mug-hot"></i></div>
+                    <div>
+                        <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Daily Items Sold</p>
+                        <h3 id="day-items" class="text-xl font-bold font-serif text-white mt-0.5">0</h3>
+                    </div>
+                </div>
+                <div class="bg-cafe-card border border-cafe-border rounded-2xl p-4 shadow-md flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-cafe-accent/10 border border-cafe-accent/30 flex items-center justify-center text-cafe-accent text-lg"><i class="fa-solid fa-peso-sign"></i></div>
+                    <div>
+                        <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Daily Revenue</p>
+                        <h3 id="day-revenue" class="text-xl font-bold font-serif text-white mt-0.5">₱0.00</h3>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Analytics Chart Section -->
-        <div class="bg-cafe-card border border-cafe-border rounded-2xl p-5 shadow-xl">
-            <h2 class="font-serif text-base font-bold text-white mb-1">Sales Analytics Overview</h2>
-            <p class="text-xs text-gray-400 mb-4">Visual representation of daily revenue performance.</p>
-            <div class="h-64 relative">
-                <canvas id="salesChart"></canvas>
+        <!-- All-time cards -->
+        <div>
+            <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">All-Time Totals</h2>
+            <div class="grid grid-cols-3 gap-3">
+                <div class="bg-cafe-card border border-cafe-border rounded-xl p-3 shadow">
+                    <p class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Total Revenue</p>
+                    <h3 id="stat-revenue" class="text-base font-bold font-serif text-white">₱0.00</h3>
+                </div>
+                <div class="bg-cafe-card border border-cafe-border rounded-xl p-3 shadow">
+                    <p class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Total Orders</p>
+                    <h3 id="stat-orders" class="text-base font-bold font-serif text-white">0</h3>
+                </div>
+                <div class="bg-cafe-card border border-cafe-border rounded-xl p-3 shadow">
+                    <p class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Total Items Sold</p>
+                    <h3 id="stat-items" class="text-base font-bold font-serif text-white">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart + Items sold breakdown -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-cafe-card border border-cafe-border rounded-2xl p-5 shadow-xl">
+                <h2 class="font-serif text-base font-bold text-white mb-1">Sales Analytics Overview</h2>
+                <p class="text-xs text-gray-400 mb-4">Revenue and orders for the last 14 days.</p>
+                <div class="h-64 relative"><canvas id="salesChart"></canvas></div>
+            </div>
+            <div class="bg-cafe-card border border-cafe-border rounded-2xl p-5 shadow-xl flex flex-col">
+                <h2 class="font-serif text-base font-bold text-white mb-1">Items Sold <span id="items-day-label" class="text-xs text-gray-400 font-sans font-normal"></span></h2>
+                <p class="text-xs text-gray-400 mb-3">Quantity per item for the selected day.</p>
+                <div id="items-breakdown" class="flex-1 overflow-y-auto max-h-64 space-y-1.5 text-xs"></div>
+            </div>
+        </div>
+
+        <!-- Daily history table -->
+        <div class="bg-cafe-card border border-cafe-border rounded-2xl shadow-xl overflow-hidden">
+            <div class="p-4 border-b border-cafe-border">
+                <h2 class="font-serif text-base font-bold text-white">Daily History</h2>
+                <p class="text-xs text-gray-400">Orders, items sold and revenue per day. Click a day to view its transactions.</p>
+            </div>
+            <div class="overflow-x-auto max-h-60 overflow-y-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead class="sticky top-0">
+                        <tr class="bg-cafe-dark text-gray-400 border-b border-cafe-border uppercase text-[10px] tracking-wider">
+                            <th class="p-3">Date</th><th class="p-3">Orders</th><th class="p-3">Items Sold</th><th class="p-3 text-right">Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody id="daily-history-body" class="divide-y divide-cafe-border/50 text-gray-200"></tbody>
+                </table>
             </div>
         </div>
 
         <!-- Orders Table Card -->
         <div class="bg-cafe-card border border-cafe-border rounded-2xl shadow-xl overflow-hidden flex flex-col">
-            <div class="p-4 border-b border-cafe-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="p-4 border-b border-cafe-border flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3">
                 <div>
                     <h2 class="font-serif text-base font-bold text-white">Recent Transactions</h2>
-                    <p class="text-xs text-gray-400">Live feed of orders processed from the POS terminal.</p>
+                    <p class="text-xs text-gray-400">Shows <span id="tx-label" class="text-white">today</span>. The list starts fresh every day &mdash; older orders stay saved in the database.</p>
                 </div>
-                <button onclick="fetchOrders()" class="px-3 py-1.5 bg-cafe-dark border border-cafe-border hover:border-cafe-accent text-xs font-semibold text-gray-300 rounded-xl transition flex items-center space-x-1.5">
-                    <i class="fa-solid fa-rotate-right text-cafe-accent"></i>
-                    <span>Refresh Data</span>
-                </button>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button id="f-today" onclick="setFilter('today')" class="filter-btn px-3 py-1.5 text-xs font-semibold rounded-xl border transition">Today</button>
+                    <button id="f-yesterday" onclick="setFilter('yesterday')" class="filter-btn px-3 py-1.5 text-xs font-semibold rounded-xl border transition">Yesterday</button>
+                    <button id="f-all" onclick="setFilter('all')" class="filter-btn px-3 py-1.5 text-xs font-semibold rounded-xl border transition">All</button>
+                    <input type="date" id="f-date" onchange="setFilter('date', this.value)" class="px-2 py-1.5 bg-cafe-dark border border-cafe-border rounded-xl text-xs text-gray-300 focus:outline-none focus:border-cafe-accent">
+                    <button onclick="fetchOrders()" class="px-3 py-1.5 bg-cafe-dark border border-cafe-border hover:border-cafe-accent text-xs font-semibold text-gray-300 rounded-xl transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-rotate-right text-cafe-accent"></i><span>Refresh</span>
+                    </button>
+                </div>
             </div>
-
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
                     <thead>
@@ -150,14 +197,12 @@
                             <th class="p-3.5">Items Summary</th>
                             <th class="p-3.5">Payment</th>
                             <th class="p-3.5">Total</th>
-                            <th class="p-3.5">Timestamp</th>
+                            <th class="p-3.5">Time</th>
                             <th class="p-3.5 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="orders-table-body" class="divide-y divide-cafe-border/50 text-gray-200">
-                        <tr>
-                            <td colspan="8" class="text-center py-8 text-gray-500">Loading orders from database...</td>
-                        </tr>
+                        <tr><td colspan="8" class="text-center py-8 text-gray-500">Loading orders from database...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -235,56 +280,194 @@
         </div>
     </div>
 
+    <!-- Edit Order Modal -->
+    <div id="edit-modal" class="no-print fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-cafe-card border border-cafe-border rounded-2xl max-w-lg w-full p-5 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
+            <div class="flex items-center justify-between">
+                <h3 class="font-serif text-base font-bold text-cafe-accent">Edit Order <span id="edit-id" class="font-mono text-white text-sm"></span></h3>
+                <button onclick="closeEditModal()" class="text-gray-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="sm:col-span-3">
+                    <label class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Customer / Table</label>
+                    <input id="edit-customer" type="text" class="w-full px-3 py-2 bg-cafe-dark border border-cafe-border rounded-xl text-sm text-white focus:outline-none focus:border-cafe-accent">
+                </div>
+                <div class="sm:col-span-1">
+                    <label class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Order Type</label>
+                    <select id="edit-type" class="w-full px-2 py-2 bg-cafe-dark border border-cafe-border rounded-xl text-sm text-white focus:outline-none focus:border-cafe-accent">
+                        <option>Dine In</option><option>Takeout</option>
+                    </select>
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Payment</label>
+                    <select id="edit-payment" class="w-full px-2 py-2 bg-cafe-dark border border-cafe-border rounded-xl text-sm text-white focus:outline-none focus:border-cafe-accent">
+                        <option>Cash</option><option>GCash</option><option>Card</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Items</p>
+                <div id="edit-items" class="space-y-2"></div>
+            </div>
+
+            <div class="bg-cafe-dark border border-cafe-border rounded-xl p-3 space-y-2">
+                <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Add Item</p>
+                <div class="flex gap-2">
+                    <select id="edit-add-existing" class="flex-1 min-w-0 px-2 py-2 bg-cafe-card border border-cafe-border rounded-lg text-xs text-white focus:outline-none focus:border-cafe-accent"></select>
+                    <button onclick="addExistingItem()" class="px-3 py-2 bg-cafe-accent hover:bg-cafe-accentHover text-cafe-dark text-xs font-bold rounded-lg">Add</button>
+                </div>
+                <div class="flex gap-2">
+                    <input id="edit-add-name" placeholder="Custom item name" class="flex-1 min-w-0 px-2 py-2 bg-cafe-card border border-cafe-border rounded-lg text-xs text-white focus:outline-none focus:border-cafe-accent">
+                    <input id="edit-add-price" type="number" min="0" step="0.01" placeholder="₱" class="w-20 px-2 py-2 bg-cafe-card border border-cafe-border rounded-lg text-xs text-white focus:outline-none focus:border-cafe-accent">
+                    <button onclick="addCustomItem()" class="px-3 py-2 bg-cafe-card border border-cafe-accent text-cafe-accent hover:bg-cafe-accent hover:text-cafe-dark text-xs font-bold rounded-lg transition">Add</button>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+                <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">New Total</span>
+                <span id="edit-total" class="text-xl font-bold font-serif text-white">₱0.00</span>
+            </div>
+
+            <div class="flex space-x-2">
+                <button onclick="saveEdit()" id="edit-save-btn" class="flex-1 py-2.5 bg-cafe-accent hover:bg-cafe-accentHover text-cafe-dark font-bold rounded-xl text-sm transition">Save Changes</button>
+                <button onclick="closeEditModal()" class="py-2.5 px-4 bg-cafe-dark border border-cafe-border text-gray-300 rounded-xl text-sm font-semibold hover:bg-cafe-border transition">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Calculator -->
+    <button onclick="toggleCalc()" id="calc-fab" class="no-print fixed bottom-5 right-5 z-40 w-14 h-14 rounded-full bg-cafe-accent text-cafe-dark shadow-2xl hover:bg-cafe-accentHover transition flex items-center justify-center text-xl" title="Calculator">
+        <i class="fa-solid fa-calculator"></i>
+    </button>
+
+    <div id="calc-panel" class="no-print fixed bottom-24 right-5 z-40 w-72 bg-cafe-card border border-cafe-border rounded-2xl shadow-2xl hidden">
+        <div class="flex items-center justify-between px-4 pt-3">
+            <p class="text-xs font-semibold text-cafe-accent uppercase tracking-wider"><i class="fa-solid fa-calculator mr-1"></i> Calculator</p>
+            <button onclick="toggleCalc()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="px-4 pt-2">
+            <div class="bg-cafe-dark border border-cafe-border rounded-xl px-3 py-2 text-right">
+                <div id="calc-expr" class="text-[11px] text-gray-500 h-4 truncate"></div>
+                <div id="calc-display" class="text-2xl font-bold font-mono text-white truncate">0</div>
+            </div>
+        </div>
+        <div class="grid grid-cols-4 gap-2 p-4" id="calc-keys"></div>
+
+        <div class="border-t border-cafe-border px-4 py-3 space-y-2">
+            <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Change Helper</p>
+            <div class="flex items-center gap-2">
+                <label class="text-[11px] text-gray-400 w-16">Amount due</label>
+                <input id="chg-due" type="number" min="0" step="0.01" oninput="calcChange()" class="flex-1 min-w-0 px-2 py-1.5 bg-cafe-dark border border-cafe-border rounded-lg text-xs text-white focus:outline-none focus:border-cafe-accent">
+            </div>
+            <div class="flex items-center gap-2">
+                <label class="text-[11px] text-gray-400 w-16">Cash given</label>
+                <input id="chg-paid" type="number" min="0" step="0.01" oninput="calcChange()" class="flex-1 min-w-0 px-2 py-1.5 bg-cafe-dark border border-cafe-border rounded-lg text-xs text-white focus:outline-none focus:border-cafe-accent">
+            </div>
+            <div class="flex items-center justify-between pt-1">
+                <span class="text-[11px] text-gray-400 uppercase font-semibold">Change</span>
+                <span id="chg-result" class="text-lg font-bold font-serif text-cafe-accent">₱0.00</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Supabase JS Library CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        // TODO: REPLACE WITH YOUR SUPABASE URL AND ANON KEY
         const SUPABASE_URL = 'https://rqrxqemefmedfpwfxezt.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_PR-DltRediKIogA5GeMGPg_3ipU2ClW';
-        
+
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let allOrdersCache = [];
         let salesChartInstance = null;
+        let filter = { mode: 'today', date: null };
+        let lastDayKey = dayKey(Date.now());
+        let editingOrder = null;   // working copy of the order being edited
 
+        /* ---------------- helpers ---------------- */
+        const peso = n => '₱' + Number(n || 0).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+        // Local calendar day (YYYY-MM-DD) from a ms timestamp. Uses the device's time zone,
+        // so "today" resets at local midnight (the old UTC text timestamp was 8 hours off for PH).
+        function dayKey(ms) {
+            const d = new Date(Number(ms));
+            return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        }
+        function orderDay(o) { return o.created_at ? dayKey(o.created_at) : (o.timestamp || '').substring(0, 10); }
+        function offsetDayKey(offset) { return dayKey(Date.now() + offset * 86400000); }
+        function prettyDay(key) {
+            const [y, m, d] = key.split('-').map(Number);
+            return new Date(y, m - 1, d).toLocaleDateString('en-PH', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+        }
+        function orderTime(o) {
+            if (!o.created_at) return o.timestamp || '';
+            return new Date(Number(o.created_at)).toLocaleString('en-PH', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+        }
+        function itemQty(o) {
+            return Array.isArray(o.items) ? o.items.reduce((s, i) => s + Number(i.quantity || 0), 0) : 0;
+        }
+        function activeDay() {
+            if (filter.mode === 'yesterday') return offsetDayKey(-1);
+            if (filter.mode === 'date' && filter.date) return filter.date;
+            return offsetDayKey(0);
+        }
+
+        /* ---------------- init ---------------- */
         window.onload = () => {
             initChart();
+            buildCalcKeys();
             fetchOrders();
+            subscribeRealtime();
+            // Midnight rollover: when the date changes, the "Today" list starts fresh automatically.
+            setInterval(() => {
+                const k = dayKey(Date.now());
+                if (k !== lastDayKey) { lastDayKey = k; fetchOrders(); }
+            }, 30000);
+            // Safety refresh every 5 minutes in case realtime drops.
+            setInterval(fetchOrders, 300000);
         };
+
+        function subscribeRealtime() {
+            const setLive = (ok) => {
+                document.getElementById('live-dot').className = 'w-2 h-2 rounded-full ' + (ok ? 'bg-green-500' : 'bg-gray-500');
+                document.getElementById('live-text').innerText = ok ? 'Live' : 'Offline';
+            };
+            try {
+                supabaseClient.channel('montage-orders')
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'montage_cafe_orders' }, () => fetchOrders(true))
+                    .subscribe(status => setLive(status === 'SUBSCRIBED'));
+            } catch (e) { setLive(false); }
+        }
 
         function initChart() {
             const ctx = document.getElementById('salesChart').getContext('2d');
             salesChartInstance = new Chart(ctx, {
-                type: 'line',
                 data: {
                     labels: [],
-                    datasets: [{
-                        label: 'Daily Revenue (₱)',
-                        data: [],
-                        borderColor: '#d4af37',
-                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.3
-                    }]
+                    datasets: [
+                        { type: 'line', label: 'Revenue (₱)', data: [], borderColor: '#d4af37', backgroundColor: 'rgba(212,175,55,0.1)', borderWidth: 2, fill: true, tension: 0.3, yAxisID: 'y' },
+                        { type: 'bar', label: 'Orders', data: [], backgroundColor: 'rgba(156,163,175,0.35)', yAxisID: 'y1' }
+                    ]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { labels: { color: '#9ca3af', font: { family: 'Inter', size: 11 } } }
-                    },
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#9ca3af', font: { family: 'Inter', size: 11 } } } },
                     scales: {
                         x: { grid: { color: '#2c353d' }, ticks: { color: '#9ca3af', font: { size: 10 } } },
-                        y: { grid: { color: '#2c353d' }, ticks: { color: '#9ca3af', font: { size: 10 } } }
+                        y: { grid: { color: '#2c353d' }, ticks: { color: '#9ca3af', font: { size: 10 } }, beginAtZero: true },
+                        y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#9ca3af', font: { size: 10 }, precision: 0 }, beginAtZero: true }
                     }
                 }
             });
         }
 
-        async function fetchOrders() {
+        /* ---------------- data ---------------- */
+        async function fetchOrders(silent) {
             const tableBody = document.getElementById('orders-table-body');
-            tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading orders...</td></tr>`;
+            if (!silent) tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading orders...</td></tr>`;
 
             const { data, error } = await supabaseClient
                 .from('montage_cafe_orders')
@@ -292,104 +475,282 @@
                 .order('created_at', { ascending: false });
 
             if (error) {
-                console.error("Error fetching orders:", error);
+                console.error('Error fetching orders:', error);
                 tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-red-400">Failed to load orders. Check your Supabase configuration keys.</td></tr>`;
                 return;
             }
-
             allOrdersCache = data || [];
-            renderDashboardData(allOrdersCache);
-            updateChartData(allOrdersCache);
+            renderAll();
         }
 
-        function renderDashboardData(orders) {
+        function renderAll() {
+            renderFilterButtons();
+            renderTotals();
+            renderDaily();
+            renderTable();
+            renderDailyHistory();
+            updateChartData();
+        }
+
+        function renderTotals() {
+            let rev = 0, items = 0;
+            allOrdersCache.forEach(o => { rev += Number(o.total || 0); items += itemQty(o); });
+            document.getElementById('stat-revenue').innerText = peso(rev);
+            document.getElementById('stat-orders').innerText = allOrdersCache.length;
+            document.getElementById('stat-items').innerText = items;
+        }
+
+        function renderDaily() {
+            const day = activeDay();
+            const dayOrders = allOrdersCache.filter(o => orderDay(o) === day);
+            let rev = 0, items = 0;
+            const perItem = {};
+            dayOrders.forEach(o => {
+                rev += Number(o.total || 0);
+                (Array.isArray(o.items) ? o.items : []).forEach(i => {
+                    const q = Number(i.quantity || 0);
+                    items += q;
+                    perItem[i.name] = (perItem[i.name] || 0) + q;
+                });
+            });
+            const isToday = day === offsetDayKey(0);
+            document.getElementById('daily-label').innerText = isToday ? 'Today' : prettyDay(day);
+            document.getElementById('items-day-label').innerText = isToday ? '(today)' : '(' + prettyDay(day) + ')';
+            document.getElementById('day-orders').innerText = dayOrders.length;
+            document.getElementById('day-items').innerText = items;
+            document.getElementById('day-revenue').innerText = peso(rev);
+
+            const rows = Object.entries(perItem).sort((a, b) => b[1] - a[1]);
+            const box = document.getElementById('items-breakdown');
+            box.innerHTML = rows.length
+                ? rows.map(([n, q]) => `<div class="flex justify-between items-center bg-cafe-dark border border-cafe-border rounded-lg px-3 py-1.5"><span class="text-gray-200 truncate pr-2">${esc(n)}</span><span class="font-bold text-cafe-accent">${q}</span></div>`).join('')
+                : `<p class="text-gray-500 text-center py-6">No items sold on this day yet.</p>`;
+        }
+
+        function renderTable() {
             const tableBody = document.getElementById('orders-table-body');
-            
-            let totalRevenue = 0;
-            let totalItemsSold = 0;
+            let list = allOrdersCache;
+            let label;
+            if (filter.mode === 'all') { label = 'all orders'; }
+            else {
+                const day = activeDay();
+                list = allOrdersCache.filter(o => orderDay(o) === day);
+                label = day === offsetDayKey(0) ? 'today' : prettyDay(day);
+            }
+            document.getElementById('tx-label').innerText = label;
 
-            orders.forEach(o => {
-                totalRevenue += Number(o.total || 0);
-                if (o.items && Array.isArray(o.items)) {
-                    o.items.forEach(i => totalItemsSold += Number(i.quantity || 0));
-                }
-            });
-
-            document.getElementById('stat-revenue').innerText = `₱${totalRevenue.toFixed(2)}`;
-            document.getElementById('stat-orders').innerText = orders.length;
-            document.getElementById('stat-items').innerText = totalItemsSold;
-
-            if (orders.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-500">No transactions recorded yet.</td></tr>`;
+            if (list.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-500">No transactions for ${esc(label)}.</td></tr>`;
                 return;
             }
-
-            tableBody.innerHTML = '';
-            orders.forEach((order) => {
-                let itemsSummary = '';
-                if (order.items && Array.isArray(order.items)) {
-                    itemsSummary = order.items.map(i => `${i.quantity}x ${i.name}`).join(', ');
-                }
-
-                tableBody.innerHTML += `
-                    <tr class="hover:bg-cafe-dark/40 transition">
-                        <td class="p-3.5 font-mono font-bold text-cafe-accent">${order.id}</td>
-                        <td class="p-3.5 font-medium text-white">${order.customer_name}</td>
-                        <td class="p-3.5"><span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-cafe-dark border border-cafe-border text-gray-300">${order.order_type}</span></td>
-                        <td class="p-3.5 text-gray-400 max-w-xs truncate" title="${itemsSummary}">${itemsSummary}</td>
-                        <td class="p-3.5"><span class="text-cafe-accent font-semibold">${order.payment_method}</span></td>
-                        <td class="p-3.5 font-bold text-white">₱${Number(order.total).toFixed(2)}</td>
-                        <td class="p-3.5 text-gray-400 text-[11px]">${order.timestamp}</td>
-                        <td class="p-3.5 text-right space-x-1">
-                            <div class="inline-flex items-center space-x-1">
-                                <button onclick="openReceiptModal('${order.id}')" class="px-2.5 py-1.5 bg-cafe-accent/15 hover:bg-cafe-accent text-cafe-accent hover:text-cafe-dark border border-cafe-accent/30 rounded-lg text-xs font-semibold transition flex items-center space-x-1" title="Print Receipt">
-                                    <i class="fa-solid fa-print"></i>
-                                    <span>Receipt</span>
-                                </button>
-                                <button onclick="deleteOrder('${order.id}')" class="px-2.5 py-1.5 bg-red-500/15 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/30 rounded-lg text-xs font-semibold transition flex items-center space-x-1" title="Delete Transaction">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
+            tableBody.innerHTML = list.map(order => {
+                const summary = Array.isArray(order.items) ? order.items.map(i => `${i.quantity}x ${i.name}`).join(', ') : '';
+                const id = esc(order.id);
+                return `
+                <tr class="hover:bg-cafe-dark/40 transition">
+                    <td class="p-3.5 font-mono font-bold text-cafe-accent">${id}${order.edited ? ' <span class="text-[9px] px-1.5 py-0.5 rounded bg-cafe-dark border border-cafe-border text-gray-400 font-sans font-semibold">edited</span>' : ''}</td>
+                    <td class="p-3.5 font-medium text-white">${esc(order.customer_name)}</td>
+                    <td class="p-3.5"><span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-cafe-dark border border-cafe-border text-gray-300">${esc(order.order_type)}</span></td>
+                    <td class="p-3.5 text-gray-400 max-w-xs truncate" title="${esc(summary)}">${esc(summary)}</td>
+                    <td class="p-3.5"><span class="text-cafe-accent font-semibold">${esc(order.payment_method)}</span></td>
+                    <td class="p-3.5 font-bold text-white">${peso(order.total)}</td>
+                    <td class="p-3.5 text-gray-400 text-[11px] whitespace-nowrap">${esc(orderTime(order))}</td>
+                    <td class="p-3.5 text-right">
+                        <div class="inline-flex items-center space-x-1">
+                            <button data-act="edit" data-id="${id}" class="px-2.5 py-1.5 bg-blue-500/15 hover:bg-blue-500 text-blue-300 hover:text-white border border-blue-500/30 rounded-lg text-xs font-semibold transition" title="Edit Order"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button data-act="calc" data-id="${id}" class="px-2.5 py-1.5 bg-cafe-dark hover:bg-cafe-border text-gray-300 border border-cafe-border rounded-lg text-xs font-semibold transition" title="Open in calculator"><i class="fa-solid fa-calculator"></i></button>
+                            <button data-act="receipt" data-id="${id}" class="px-2.5 py-1.5 bg-cafe-accent/15 hover:bg-cafe-accent text-cafe-accent hover:text-cafe-dark border border-cafe-accent/30 rounded-lg text-xs font-semibold transition flex items-center space-x-1" title="Print Receipt"><i class="fa-solid fa-print"></i><span>Receipt</span></button>
+                            <button data-act="delete" data-id="${id}" class="px-2.5 py-1.5 bg-red-500/15 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/30 rounded-lg text-xs font-semibold transition" title="Delete Transaction"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
         }
 
-        async function deleteOrder(orderId) {
-            if (!confirm(`Are you sure you want to delete transaction ${orderId}?`)) {
-                return;
-            }
+        // One delegated click handler (order IDs like "#MC-1234" never break inline JS)
+        document.addEventListener('click', e => {
+            const btn = e.target.closest('button[data-act]');
+            if (!btn) return;
+            const id = btn.dataset.id;
+            if (btn.dataset.act === 'edit') openEditModal(id);
+            else if (btn.dataset.act === 'receipt') openReceiptModal(id);
+            else if (btn.dataset.act === 'delete') deleteOrder(id);
+            else if (btn.dataset.act === 'calc') {
+                const o = allOrdersCache.find(x => x.id === id);
+                if (o) { openCalc(); document.getElementById('chg-due').value = Number(o.total).toFixed(2); document.getElementById('chg-paid').value = ''; calcChange(); document.getElementById('chg-paid').focus(); }
+            } else if (btn.dataset.act === 'day') setFilter('date', btn.dataset.day);
+        });
 
-            const { error } = await supabaseClient
-                .from('montage_cafe_orders')
-                .delete()
-                .eq('id', orderId);
-
-            if (error) {
-                console.error("Error deleting order:", error);
-                alert("Failed to delete transaction. Please check console.");
-                return;
-            }
-
-            // Refresh data list after successful deletion
-            fetchOrders();
+        function renderDailyHistory() {
+            const map = {};
+            allOrdersCache.forEach(o => {
+                const k = orderDay(o);
+                map[k] = map[k] || { orders: 0, items: 0, rev: 0 };
+                map[k].orders++; map[k].items += itemQty(o); map[k].rev += Number(o.total || 0);
+            });
+            const rows = Object.entries(map).sort((a, b) => b[0].localeCompare(a[0]));
+            document.getElementById('daily-history-body').innerHTML = rows.length
+                ? rows.map(([k, v]) => `
+                    <tr class="hover:bg-cafe-dark/40 cursor-pointer">
+                        <td class="p-3"><button data-act="day" data-day="${esc(k)}" class="text-cafe-accent font-semibold hover:underline">${esc(prettyDay(k))}</button></td>
+                        <td class="p-3">${v.orders}</td><td class="p-3">${v.items}</td>
+                        <td class="p-3 text-right font-bold text-white">${peso(v.rev)}</td>
+                    </tr>`).join('')
+                : `<tr><td colspan="4" class="text-center py-6 text-gray-500">No data yet.</td></tr>`;
         }
 
-        function updateChartData(orders) {
-            const dateMap = {};
-            const sorted = [...orders].sort((a, b) => a.created_at - b.created_at);
-
-            sorted.forEach(o => {
-                const dateKey = o.timestamp ? o.timestamp.substring(0, 10) : 'Unknown';
-                dateMap[dateKey] = (dateMap[dateKey] || 0) + Number(o.total || 0);
+        function updateChartData() {
+            const labels = [], rev = [], cnt = [];
+            const map = {};
+            allOrdersCache.forEach(o => {
+                const k = orderDay(o);
+                map[k] = map[k] || { rev: 0, n: 0 };
+                map[k].rev += Number(o.total || 0); map[k].n++;
             });
-
-            salesChartInstance.data.labels = Object.keys(dateMap);
-            salesChartInstance.data.datasets[0].data = Object.values(dateMap);
+            for (let i = 13; i >= 0; i--) {
+                const k = offsetDayKey(-i);
+                labels.push(k.substring(5));
+                rev.push(map[k] ? map[k].rev : 0);
+                cnt.push(map[k] ? map[k].n : 0);
+            }
+            salesChartInstance.data.labels = labels;
+            salesChartInstance.data.datasets[0].data = rev;
+            salesChartInstance.data.datasets[1].data = cnt;
             salesChartInstance.update();
         }
 
+        /* ---------------- filters ---------------- */
+        function setFilter(mode, date) {
+            filter = { mode, date: date || null };
+            if (mode !== 'date') document.getElementById('f-date').value = '';
+            else document.getElementById('f-date').value = date;
+            renderAll();
+        }
+        function renderFilterButtons() {
+            const on = 'bg-cafe-accent text-cafe-dark border-cafe-accent', off = 'bg-cafe-dark text-gray-300 border-cafe-border hover:border-cafe-accent';
+            ['today', 'yesterday', 'all'].forEach(m => {
+                document.getElementById('f-' + m).className = 'filter-btn px-3 py-1.5 text-xs font-semibold rounded-xl border transition ' + (filter.mode === m ? on : off);
+            });
+        }
+
+        /* ---------------- delete ---------------- */
+        async function deleteOrder(orderId) {
+            if (!confirm(`Are you sure you want to delete transaction ${orderId}?`)) return;
+            const { error } = await supabaseClient.from('montage_cafe_orders').delete().eq('id', orderId);
+            if (error) { console.error('Error deleting order:', error); alert('Failed to delete transaction. Please check console.'); return; }
+            fetchOrders(true);
+        }
+
+        /* ---------------- edit order ---------------- */
+        function openEditModal(orderId) {
+            const o = allOrdersCache.find(x => x.id === orderId);
+            if (!o) return;
+            editingOrder = {
+                id: o.id,
+                items: (Array.isArray(o.items) ? o.items : []).map(i => ({ ...i, quantity: Number(i.quantity || 0), price: Number(i.price || 0) }))
+            };
+            document.getElementById('edit-id').innerText = o.id;
+            document.getElementById('edit-customer').value = o.customer_name || '';
+            setSelect('edit-type', o.order_type);
+            setSelect('edit-payment', o.payment_method);
+
+            // Build "add item" list from every item already sold (name + price)
+            const seen = {};
+            allOrdersCache.forEach(x => (Array.isArray(x.items) ? x.items : []).forEach(i => { seen[i.name] = Number(i.price || 0); }));
+            const sel = document.getElementById('edit-add-existing');
+            sel.innerHTML = Object.keys(seen).sort().map(n => `<option value="${esc(n)}" data-price="${seen[n]}">${esc(n)} — ${peso(seen[n])}</option>`).join('')
+                || '<option value="">(no items yet)</option>';
+
+            renderEditItems();
+            const m = document.getElementById('edit-modal');
+            m.classList.remove('hidden'); m.classList.add('flex');
+        }
+        function setSelect(id, value) {
+            const sel = document.getElementById(id);
+            if (value && ![...sel.options].some(op => op.value === value)) sel.add(new Option(value, value));
+            sel.value = value;
+        }
+        function closeEditModal() {
+            const m = document.getElementById('edit-modal');
+            m.classList.add('hidden'); m.classList.remove('flex');
+            editingOrder = null;
+        }
+        function renderEditItems() {
+            const box = document.getElementById('edit-items');
+            const items = editingOrder.items;
+            box.innerHTML = items.length ? items.map((it, idx) => `
+                <div class="flex items-center gap-2 bg-cafe-dark border border-cafe-border rounded-xl px-3 py-2">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-semibold text-white truncate">${esc(it.name)}</p>
+                        <p class="text-[11px] text-cafe-accent">${peso(it.price)} each</p>
+                    </div>
+                    <button onclick="changeEditQty(${idx}, -1)" class="w-7 h-7 rounded-lg bg-cafe-card border border-cafe-border text-gray-300 hover:text-white"><i class="fa-solid fa-minus text-[10px]"></i></button>
+                    <span class="w-6 text-center text-sm font-bold text-white">${it.quantity}</span>
+                    <button onclick="changeEditQty(${idx}, 1)" class="w-7 h-7 rounded-lg bg-cafe-card border border-cafe-border text-cafe-accent hover:text-white"><i class="fa-solid fa-plus text-[10px]"></i></button>
+                    <button onclick="removeEditItem(${idx})" class="w-7 h-7 rounded-lg text-red-400 hover:bg-red-500 hover:text-white transition"><i class="fa-solid fa-trash-can text-[11px]"></i></button>
+                </div>`).join('')
+                : '<p class="text-xs text-gray-500 text-center py-3">No items. Add at least one item.</p>';
+            document.getElementById('edit-total').innerText = peso(editTotal());
+        }
+        const editTotal = () => editingOrder.items.reduce((s, i) => s + i.price * i.quantity, 0);
+        function changeEditQty(idx, d) {
+            const it = editingOrder.items[idx];
+            it.quantity = Math.max(1, it.quantity + d);
+            renderEditItems();
+        }
+        function removeEditItem(idx) { editingOrder.items.splice(idx, 1); renderEditItems(); }
+        function addItemToEdit(name, price) {
+            const ex = editingOrder.items.find(i => i.name === name && Number(i.price) === Number(price));
+            if (ex) ex.quantity++; else editingOrder.items.push({ name, price: Number(price), quantity: 1 });
+            renderEditItems();
+        }
+        function addExistingItem() {
+            const sel = document.getElementById('edit-add-existing');
+            const opt = sel.options[sel.selectedIndex];
+            if (!opt || !opt.value) return;
+            addItemToEdit(opt.value, opt.dataset.price);
+        }
+        function addCustomItem() {
+            const name = document.getElementById('edit-add-name').value.trim();
+            const price = parseFloat(document.getElementById('edit-add-price').value);
+            if (!name || isNaN(price) || price < 0) { alert('Enter an item name and a valid price.'); return; }
+            addItemToEdit(name, price);
+            document.getElementById('edit-add-name').value = '';
+            document.getElementById('edit-add-price').value = '';
+        }
+
+        async function saveEdit() {
+            if (!editingOrder) return;
+            const customer = document.getElementById('edit-customer').value.trim();
+            if (!customer) { alert('Customer / table cannot be empty.'); return; }
+            if (editingOrder.items.length === 0) { alert('An order needs at least one item. Delete the order instead if it was a mistake.'); return; }
+
+            const btn = document.getElementById('edit-save-btn');
+            btn.disabled = true; btn.innerText = 'Saving...';
+
+            const update = {
+                customer_name: customer,
+                order_type: document.getElementById('edit-type').value,
+                payment_method: document.getElementById('edit-payment').value,
+                items: editingOrder.items,
+                total: editTotal()
+            };
+            // Try to also stamp edit info (needs the SQL update); fall back if columns don't exist yet.
+            let res = await supabaseClient.from('montage_cafe_orders')
+                .update({ ...update, edited: true, updated_at: new Date().toISOString() })
+                .eq('id', editingOrder.id).select();
+            if (res.error && /edited|updated_at|column/i.test(res.error.message || '')) {
+                res = await supabaseClient.from('montage_cafe_orders').update(update).eq('id', editingOrder.id).select();
+            }
+            btn.disabled = false; btn.innerText = 'Save Changes';
+
+            if (res.error) { console.error('Error updating order:', res.error); alert('Failed to save changes. Please check console.'); return; }
+            if (!res.data || res.data.length === 0) { alert('Nothing was updated. Check your Supabase policies.'); return; }
+            closeEditModal();
+            fetchOrders(true);
+        }
+
+        /* ---------------- receipt ---------------- */
         function openReceiptModal(orderId) {
             const order = allOrdersCache.find(o => o.id === orderId);
             if (!order) return;
@@ -398,36 +759,91 @@
             document.getElementById('receipt-customer').innerText = order.customer_name;
             document.getElementById('receipt-type').innerText = order.order_type;
             document.getElementById('receipt-payment').innerText = order.payment_method;
-            document.getElementById('receipt-timestamp').innerText = order.timestamp;
-            document.getElementById('receipt-total').innerText = `₱${Number(order.total).toFixed(2)}`;
+            document.getElementById('receipt-timestamp').innerText = order.created_at
+                ? new Date(Number(order.created_at)).toLocaleString('en-PH') : order.timestamp;
+            document.getElementById('receipt-total').innerText = peso(order.total);
 
-            const itemsListContainer = document.getElementById('receipt-items-list');
-            itemsListContainer.innerHTML = '';
-
-            if (order.items && Array.isArray(order.items)) {
-                order.items.forEach(item => {
-                    const itemTotal = item.price * item.quantity;
-                    itemsListContainer.innerHTML += `
-                        <div class="flex justify-between items-center text-[11px]">
-                            <div>
-                                <span class="font-bold">${item.quantity}x</span> ${item.name}
-                            </div>
-                            <div>₱${itemTotal.toFixed(2)}</div>
-                        </div>
-                    `;
-                });
-            }
+            const box = document.getElementById('receipt-items-list');
+            box.innerHTML = (Array.isArray(order.items) ? order.items : []).map(item => `
+                <div class="flex justify-between items-center text-[11px]">
+                    <div><span class="font-bold">${item.quantity}x</span> ${esc(item.name)}</div>
+                    <div>${peso(item.price * item.quantity)}</div>
+                </div>`).join('');
 
             const modal = document.getElementById('receipt-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
         }
-
         function closeReceiptModal() {
             const modal = document.getElementById('receipt-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+            modal.classList.add('hidden'); modal.classList.remove('flex');
         }
+
+        /* ---------------- calculator ---------------- */
+        let cur = '0', prev = null, op = null, fresh = true;
+        const KEYS = ['C', '⌫', '%', '÷', '7', '8', '9', '×', '4', '5', '6', '−', '1', '2', '3', '+', '±', '0', '.', '='];
+
+        function buildCalcKeys() {
+            document.getElementById('calc-keys').innerHTML = KEYS.map(k => {
+                const isOp = ['÷', '×', '−', '+'].includes(k);
+                const cls = k === '=' ? 'bg-cafe-accent text-cafe-dark hover:bg-cafe-accentHover'
+                    : isOp ? 'bg-cafe-accent/20 text-cafe-accent hover:bg-cafe-accent/40'
+                    : ['C', '⌫', '%', '±'].includes(k) ? 'bg-cafe-border text-gray-200 hover:bg-gray-600'
+                    : 'bg-cafe-dark text-white border border-cafe-border hover:bg-cafe-border';
+                return `<button onclick="calcKey('${k}')" class="h-10 rounded-xl text-sm font-bold transition ${cls}">${k}</button>`;
+            }).join('');
+        }
+        function toggleCalc() { document.getElementById('calc-panel').classList.toggle('hidden'); }
+        function openCalc() { document.getElementById('calc-panel').classList.remove('hidden'); }
+        function calcOpen() { return !document.getElementById('calc-panel').classList.contains('hidden'); }
+
+        function compute(a, b, o) {
+            a = parseFloat(a); b = parseFloat(b);
+            let r = o === '+' ? a + b : o === '−' ? a - b : o === '×' ? a * b : o === '÷' ? (b === 0 ? NaN : a / b) : b;
+            return isNaN(r) || !isFinite(r) ? 'Error' : String(parseFloat(r.toFixed(10)));
+        }
+        function calcKey(k) {
+            if (cur === 'Error' && k !== 'C') return;
+            if (/^[0-9]$/.test(k)) {
+                cur = (fresh || cur === '0') ? k : cur + k; fresh = false;
+            } else if (k === '.') {
+                if (fresh) { cur = '0.'; fresh = false; } else if (!cur.includes('.')) cur += '.';
+            } else if (k === 'C') {
+                cur = '0'; prev = null; op = null; fresh = true;
+            } else if (k === '⌫') {
+                cur = cur.length > 1 && !fresh ? cur.slice(0, -1) : '0'; if (cur === '-') cur = '0';
+            } else if (k === '±') {
+                if (cur !== '0') cur = cur.startsWith('-') ? cur.slice(1) : '-' + cur;
+            } else if (k === '%') {
+                cur = String(parseFloat(cur) / 100);
+            } else if (['+', '−', '×', '÷'].includes(k)) {
+                if (op && !fresh) { cur = compute(prev, cur, op); }
+                prev = cur; op = k; fresh = true;
+            } else if (k === '=') {
+                if (op) { document.getElementById('calc-expr').innerText = `${prev} ${op} ${cur} =`; cur = compute(prev, cur, op); prev = null; op = null; fresh = true; }
+                renderCalc(true); return;
+            }
+            renderCalc();
+        }
+        function renderCalc(keepExpr) {
+            document.getElementById('calc-display').innerText = cur;
+            if (!keepExpr) document.getElementById('calc-expr').innerText = op ? `${prev} ${op}` : '';
+        }
+        function calcChange() {
+            const due = parseFloat(document.getElementById('chg-due').value) || 0;
+            const paid = parseFloat(document.getElementById('chg-paid').value) || 0;
+            const el = document.getElementById('chg-result');
+            if (paid && paid < due) { el.innerText = 'Short ' + peso(due - paid); el.className = 'text-lg font-bold font-serif text-red-400'; }
+            else { el.innerText = peso(Math.max(0, paid - due)); el.className = 'text-lg font-bold font-serif text-cafe-accent'; }
+        }
+
+        // Keyboard support for the calculator (only when open and not typing in a field)
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') { closeEditModal(); closeReceiptModal(); return; }
+            if (!calcOpen() || ['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+            const map = { '*': '×', '/': '÷', '-': '−', 'Enter': '=', '=': '=', 'Backspace': '⌫', 'Delete': 'C' };
+            const k = map[e.key] || e.key;
+            if (/^[0-9.+%]$/.test(k) || ['×', '÷', '−', '=', '⌫', 'C'].includes(k)) { e.preventDefault(); calcKey(k); }
+        });
     </script>
 </body>
 </html>
