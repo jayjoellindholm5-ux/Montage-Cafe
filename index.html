@@ -229,6 +229,44 @@
                 <button onclick="setPaymentMethod('Card')" id="pay-card" class="py-2.5 rounded-xl border border-cafe-border bg-cafe-dark text-gray-300 text-xs font-semibold">Card</button>
             </div>
 
+            <!-- Cash Calculator (only shown for Cash payments) -->
+            <div id="cash-calc" class="bg-cafe-dark border border-cafe-border rounded-xl p-3 space-y-3">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-calculator text-cafe-accent"></i>
+                    <span class="text-xs font-semibold text-gray-200 uppercase tracking-wider">Cash Calculator</span>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Order Total</span>
+                    <span id="checkout-total" class="text-lg font-bold font-serif text-white">₱0.00</span>
+                </div>
+
+                <div>
+                    <label for="cash-received" class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Amount Received from Customer</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-cafe-accent font-bold">₱</span>
+                        <input type="number" id="cash-received" min="0" step="0.01" inputmode="decimal" placeholder="0.00" oninput="updateCashCalc()"
+                            class="w-full pl-8 pr-3 py-2.5 bg-cafe-card border border-cafe-border rounded-xl text-lg font-bold text-white focus:outline-none focus:border-cafe-accent">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-4 gap-1.5">
+                    <button type="button" onclick="setReceivedExact()" class="col-span-2 py-2 rounded-lg bg-cafe-accent/15 border border-cafe-accent/40 text-cafe-accent text-xs font-bold hover:bg-cafe-accent hover:text-cafe-dark transition">Exact</button>
+                    <button type="button" onclick="setReceived(20)" class="py-2 rounded-lg bg-cafe-card border border-cafe-border text-gray-200 text-xs font-semibold hover:border-cafe-accent transition">₱20</button>
+                    <button type="button" onclick="setReceived(50)" class="py-2 rounded-lg bg-cafe-card border border-cafe-border text-gray-200 text-xs font-semibold hover:border-cafe-accent transition">₱50</button>
+                    <button type="button" onclick="setReceived(100)" class="py-2 rounded-lg bg-cafe-card border border-cafe-border text-gray-200 text-xs font-semibold hover:border-cafe-accent transition">₱100</button>
+                    <button type="button" onclick="setReceived(200)" class="py-2 rounded-lg bg-cafe-card border border-cafe-border text-gray-200 text-xs font-semibold hover:border-cafe-accent transition">₱200</button>
+                    <button type="button" onclick="setReceived(500)" class="py-2 rounded-lg bg-cafe-card border border-cafe-border text-gray-200 text-xs font-semibold hover:border-cafe-accent transition">₱500</button>
+                    <button type="button" onclick="setReceived(1000)" class="py-2 rounded-lg bg-cafe-card border border-cafe-border text-gray-200 text-xs font-semibold hover:border-cafe-accent transition">₱1000</button>
+                    <button type="button" onclick="clearReceived()" class="col-span-4 py-1.5 rounded-lg text-gray-400 text-[11px] font-semibold hover:text-white transition">Clear</button>
+                </div>
+
+                <div id="cash-result-box" class="flex items-center justify-between rounded-xl px-3 py-2.5 bg-cafe-card border border-cafe-border">
+                    <span id="cash-change-label" class="text-xs font-semibold uppercase tracking-wider text-gray-400">Change</span>
+                    <span id="cash-change" class="text-2xl font-bold font-serif text-cafe-accent">₱0.00</span>
+                </div>
+            </div>
+
             <!-- Print Receipt Option Toggle -->
             <div class="flex items-center justify-between bg-cafe-dark p-3 rounded-xl border border-cafe-border">
                 <div class="flex items-center space-x-2">
@@ -280,6 +318,11 @@
                 <p>TOTAL: <span id="receipt-total"></span></p>
             </div>
 
+            <div id="receipt-cash-rows" style="display: none; text-align: right; font-size: 11px; margin-top: 4px;">
+                <p>CASH: <span id="receipt-cash"></span></p>
+                <p>CHANGE: <span id="receipt-change"></span></p>
+            </div>
+
             <p style="font-size: 10px; margin-top: 15px;">Thank you for visiting Montage Cafe!</p>
         </div>
     </div>
@@ -310,8 +353,7 @@
                 { name: 'Hazelnut Latte (Iced)', price: 119, category: 'iced' },
                 { name: 'Caramel Macchiato (Iced)', price: 119, category: 'iced' },
                 { name: 'Mocha Latte (Iced)', price: 119, category: 'iced' },
-                { name: 'Sea Salt Latte (Iced)', price: 129, category: 'iced' },
-                { name: 'Dirty Matcha (Iced)', price: 129, category: 'iced' }
+                { name: 'Sea Salt Latte (Iced)', price: 129, category: 'iced' }
             ],
             
             favorites: [
@@ -510,8 +552,61 @@
             }
         }
 
+        /* ---------- Cash calculator (checkout) ---------- */
+        function getCartTotal() {
+            return cart.reduce((s, i) => s + (i.price * i.quantity), 0);
+        }
+
+        function getReceivedAmount() {
+            const raw = document.getElementById('cash-received').value;
+            const n = parseFloat(raw);
+            return (raw === '' || isNaN(n)) ? null : n;
+        }
+
+        // Runs automatically on every keystroke / quick-button tap
+        function updateCashCalc() {
+            const total = getCartTotal();
+            const received = getReceivedAmount();
+            const box = document.getElementById('cash-result-box');
+            const label = document.getElementById('cash-change-label');
+            const value = document.getElementById('cash-change');
+            document.getElementById('checkout-total').innerText = `₱${total.toFixed(2)}`;
+
+            // Work in centavos to avoid floating point errors (e.g. 0.1 + 0.2)
+            const diff = received === null ? 0 : Math.round(received * 100) - Math.round(total * 100);
+
+            if (received === null) {
+                label.innerText = 'Change';
+                value.innerText = '₱0.00';
+                value.className = 'text-2xl font-bold font-serif text-gray-500';
+                box.className = 'flex items-center justify-between rounded-xl px-3 py-2.5 bg-cafe-card border border-cafe-border';
+            } else if (diff < 0) {
+                label.innerText = 'Short by';
+                value.innerText = `₱${(Math.abs(diff) / 100).toFixed(2)}`;
+                value.className = 'text-2xl font-bold font-serif text-red-400';
+                box.className = 'flex items-center justify-between rounded-xl px-3 py-2.5 bg-red-500/10 border border-red-500/40';
+            } else {
+                label.innerText = 'Change';
+                value.innerText = `₱${(diff / 100).toFixed(2)}`;
+                value.className = 'text-2xl font-bold font-serif text-cafe-accent';
+                box.className = 'flex items-center justify-between rounded-xl px-3 py-2.5 bg-cafe-accent/10 border border-cafe-accent/40';
+            }
+        }
+
+        function setReceived(amount) {
+            document.getElementById('cash-received').value = amount;
+            updateCashCalc();
+        }
+        function setReceivedExact() { setReceived(getCartTotal()); }
+        function clearReceived() {
+            document.getElementById('cash-received').value = '';
+            updateCashCalc();
+            document.getElementById('cash-received').focus();
+        }
+
         function setPaymentMethod(method) {
             paymentMethod = method;
+            document.getElementById('cash-calc').classList.toggle('hidden', method !== 'Cash');
             ['Cash', 'GCash', 'Card'].forEach(m => {
                 const btn = document.getElementById(`pay-${m.toLowerCase()}`);
                 if (m === method) {
@@ -564,17 +659,32 @@
                 alert("Please enter customer name or table #");
                 return;
             }
+            document.getElementById('cash-received').value = '';
+            setPaymentMethod(paymentMethod);
+            updateCashCalc();
             document.getElementById('checkout-modal').classList.remove('hidden');
             document.getElementById('checkout-modal').classList.add('flex');
+            if (paymentMethod === 'Cash' && window.innerWidth >= 1024) {
+                setTimeout(() => document.getElementById('cash-received').focus(), 50);
+            }
         }
 
-        function triggerReceiptPrint(orderRecord) {
+        function triggerReceiptPrint(orderRecord, cashInfo) {
             document.getElementById('receipt-id').innerText = orderRecord.id;
             document.getElementById('receipt-customer').innerText = orderRecord.customer_name;
             document.getElementById('receipt-type').innerText = orderRecord.order_type;
             document.getElementById('receipt-payment').innerText = orderRecord.payment_method;
             document.getElementById('receipt-datetime').innerText = orderRecord.timestamp;
             document.getElementById('receipt-total').innerText = `₱${orderRecord.total.toFixed(2)}`;
+
+            const cashRows = document.getElementById('receipt-cash-rows');
+            if (cashInfo) {
+                document.getElementById('receipt-cash').innerText = `₱${cashInfo.received.toFixed(2)}`;
+                document.getElementById('receipt-change').innerText = `₱${cashInfo.change.toFixed(2)}`;
+                cashRows.style.display = 'block';
+            } else {
+                cashRows.style.display = 'none';
+            }
 
             const tbody = document.getElementById('receipt-items-body');
             tbody.innerHTML = '';
@@ -604,6 +714,21 @@
                 created_at: Date.now()
             };
 
+            // Cash validation: block the sale if the customer hasn't given enough
+            let cashInfo = null;
+            if (paymentMethod === 'Cash') {
+                const received = getReceivedAmount();
+                if (received !== null) {
+                    const diff = Math.round(received * 100) - Math.round(subtotal * 100);
+                    if (diff < 0) {
+                        alert(`Amount received is short by ₱${(Math.abs(diff) / 100).toFixed(2)}.`);
+                        document.getElementById('cash-received').focus();
+                        return;
+                    }
+                    cashInfo = { received: received, change: diff / 100 };
+                }
+            }
+
             const shouldPrint = document.getElementById('print-receipt-checkbox').checked;
 
             const { error } = await supabaseClient
@@ -614,13 +739,15 @@
                 console.error("Error inserting order: ", error);
                 alert("Failed to submit order. Check console or Supabase keys.");
             } else {
-                alert("Order completed and sent to Supabase!");
+                alert(cashInfo && cashInfo.change > 0
+                    ? `Order completed! Give change: ₱${cashInfo.change.toFixed(2)}`
+                    : "Order completed and sent to Supabase!");
                 
                 document.getElementById('checkout-modal').classList.add('hidden');
                 document.getElementById('checkout-modal').classList.remove('flex');
                 
                 if (shouldPrint) {
-                    triggerReceiptPrint(orderRecord);
+                    triggerReceiptPrint(orderRecord, cashInfo);
                 }
 
                 cart = [];
