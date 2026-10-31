@@ -392,6 +392,20 @@
             renderMenu(cat);
         }
 
+        // Any item with a "sizes" list (hot coffee, milk tea, fruity soda, fries flavors...)
+        // shows all its options and opens the size picker; plain items add straight to the cart.
+        function getPriceDisplay(item) {
+            if (item.sizes) {
+                return Object.entries(item.sizes).map(([label, price]) => `${label}: ₱${price}`).join(' | ');
+            }
+            return `₱${item.price}`;
+        }
+
+        function handleItemClick(item) {
+            if (item.sizes) openItemModal(item);
+            else changeItemQuantity(item.name, item.price, 1);
+        }
+
         function renderMenu(category) {
             const grid = document.getElementById('menu-grid');
             grid.innerHTML = '';
@@ -399,19 +413,8 @@
                 const card = document.createElement('div');
                 card.className = "bg-cafe-card border border-cafe-border hover:border-cafe-accent rounded-xl p-3 cursor-pointer transition shadow-sm flex flex-col justify-between group";
                 
-                let priceDisplay = `₱${item.price}`;
-                if (item.type === 'hott') {
-                    priceDisplay = `8oz: ₱${item.sizes['8oz']} | 12oz: ₱${item.sizes['12oz']}`;
-                    card.onclick = () => openItemModal(item);
-                } else if (item.type === 'milktea') {
-                    priceDisplay = `16oz: ₱${item.sizes['16oz']} | 22oz: ₱${item.sizes['22oz']}`;
-                    card.onclick = () => openItemModal(item);
-                } else if (item.type === 'flavor') {
-                    priceDisplay = `Cheese: ₱${item.sizes['Cheese']} | Sour cream: ₱${item.sizes['Sour Cream']} | BBQ: ₱${item.sizes['BBQ']}`;
-                    card.onclick = () => openItemModal(item);
-                } else {
-                    card.onclick = () => changeItemQuantity(item.name, item.price, 1);
-                }
+                const priceDisplay = getPriceDisplay(item);
+                card.onclick = () => handleItemClick(item);
 
                 card.innerHTML = `
                     <div><h4 class="font-serif font-bold text-white text-xs">${item.name}</h4></div>
@@ -437,12 +440,8 @@
                 const card = document.createElement('div');
                 card.className = "bg-cafe-card border border-cafe-border hover:border-cafe-accent rounded-xl p-3 cursor-pointer transition shadow-sm flex flex-col justify-between group";
                 
-                let priceDisplay = item.price ? `₱${item.price}` : `16oz: ₱${item.sizes['16oz']} | 22oz: ₱${item.sizes['22oz']}`;
-                card.onclick = () => {
-                    if (item.type === 'sized') openItemModal(item);
-                    else if(item.type === 'flavor') openItemModal(item);
-                    else changeItemQuantity(item.name, item.price, 1);
-                };
+                const priceDisplay = getPriceDisplay(item);
+                card.onclick = () => handleItemClick(item);
 
                 card.innerHTML = `
                     <div><h4 class="font-serif font-bold text-white text-xs">${item.name}</h4></div>
@@ -464,13 +463,13 @@
             Object.keys(item.sizes).forEach(size => {
                 const price = item.sizes[size];
                 const fullName = `${item.name} (${size})`;
-                container.innerHTML += `
-                    <button onclick="changeItemQuantity('${fullName}', ${price}, 1); closeItemModal();" 
-                        class="w-full py-3 px-4 bg-cafe-dark border border-cafe-border hover:border-cafe-accent rounded-xl flex justify-between items-center text-white transition group">
+                const btn = document.createElement('button');
+                btn.className = "w-full py-3 px-4 bg-cafe-dark border border-cafe-border hover:border-cafe-accent rounded-xl flex justify-between items-center text-white transition group";
+                btn.innerHTML = `
                         <span class="font-semibold text-sm">${size}</span>
-                        <span class="font-bold text-cafe-accent text-sm">₱${price} <span class="text-xs bg-cafe-accent text-cafe-dark px-2 py-0.5 rounded ml-2 group-hover:bg-cafe-accentHover">+ Add Cart</span></span>
-                    </button>
-                `;
+                        <span class="font-bold text-cafe-accent text-sm">₱${price} <span class="text-xs bg-cafe-accent text-cafe-dark px-2 py-0.5 rounded ml-2 group-hover:bg-cafe-accentHover">+ Add Cart</span></span>`;
+                btn.onclick = () => { changeItemQuantity(fullName, price, 1); closeItemModal(); };
+                container.appendChild(btn);
             });
             modal.classList.remove('hidden');
             modal.classList.add('flex');
